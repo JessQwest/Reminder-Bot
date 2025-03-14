@@ -1,0 +1,28 @@
+server-info:
+  # The ID of the main server
+  server-id: ''
+
+  admin-user-id: ''
+
+  logging-server-id: ''
+  logging-channel-id: ''
+
+database:
+  host: ''
+  port: ''
+  user: ''
+  password: ''
+  database: ''
+
+debug-mode:
+  # Useful for testing with a non production database
+  enabled: false
+
+  debug-server-id: ''
+  debug-channel-id: ''
+
+  debughost: '127.0.0.1'
+  debugport: '3306'
+  debuguser: 'mainuser'
+  debugpassword: 'abcd1234%'
+  debugdatabase: 'whitelistTestDatabase'
