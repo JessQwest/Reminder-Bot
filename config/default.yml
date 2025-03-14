@@ -25,4 +25,4 @@ debug-mode:
   debugport: '3306'
   debuguser: 'mainuser'
   debugpassword: 'abcd1234%'
-  debugdatabase: 'whitelistTestDatabase'
+  debugdatabase: 'reminders'

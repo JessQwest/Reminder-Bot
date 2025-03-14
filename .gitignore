@@ -130,8 +130,8 @@ dist
 .pnp.*
 
 .idea/
-keys/
 config/local.yml
 package-lock.json
 robota.tar
 .docker_temp*
+/keys/

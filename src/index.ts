@@ -91,7 +91,7 @@ client.on('ready', async () => {
 
     db_setup.setupDatabaseTables()
 
-    command_management.registerCommands()
+    await command_management.resetCommands()
 
     if (client.user != null) {
         client.user.setActivity(`📜Remembering Everything!`, {type: ActivityType.Custom})
