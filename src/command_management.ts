@@ -3,7 +3,7 @@ const { SlashCommandBuilder } = require('discord.js');
 import { writeData, readData } from "./data_persistence"
 import { SlashCommandStringOption } from "@discordjs/builders"
 
-const commandVersion = "2";
+const commandVersion = "3";
 
 async function checkCommandVersion(): Promise<boolean> {
     try {
@@ -56,6 +56,7 @@ export async function resetCommands() {
             .addStringOption((option: SlashCommandStringOption) =>
                 option.setName('time')
                     .setDescription('The time to set the reminder for')
+                    .setAutocomplete(true)
                     .setRequired(true)
             )
             .addStringOption((option: SlashCommandStringOption) =>

@@ -1,10 +1,11 @@
 import { interactionCreateCommand } from "./action_interactionCreateCommand"
 import * as dotenv from 'dotenv'
-import { CacheType, GuildTextBasedChannel, Interaction, Message } from "discord.js"
+import { CacheType, Events, GuildTextBasedChannel, Interaction, Message } from "discord.js"
 import * as db_setup from './db_setup'
 import * as scheduled_jobs from './scheduled_jobs'
 import * as command_management from './command_management'
 import { messageCreate } from "./action_messageCreate"
+import { interactionAutoComplete } from "./action_interactionAutoComplete"
 const { ActivityType } = require('discord.js');
 
 var cron = require('node-cron')
@@ -82,7 +83,7 @@ export const con = mysql.createPool({
 export var debugchannel: GuildTextBasedChannel
 export var loggingchannel: GuildTextBasedChannel
 
-client.on('ready', async () => {
+client.on(Events.ClientReady, async () => {
 
     console.log("Environment Variables:")
     for (const [key, value] of Object.entries(process.env)) {
@@ -105,14 +106,19 @@ client.on('ready', async () => {
     await loggingchannel.send("Bot Started")
 })
 
-client.on('messageCreate', async (message: Message) => {
+client.on(Events.MessageCreate, async (message: Message) => {
     await messageCreate(client, message)
 })
 
-client.on('interactionCreate', async (i: Interaction<CacheType>) => {
+client.on(Events.InteractionCreate, async (i: Interaction<CacheType>) => {
     if (!i.isChatInputCommand()) return
     await interactionCreateCommand(client, i)
 })
+
+client.on(Events.InteractionCreate, async (i: Interaction) => {
+    if (!i.isAutocomplete()) return;
+    await interactionAutoComplete(client, i)
+});
 
 // hourly housekeep
 cron.schedule('0 * * * *', async () => {

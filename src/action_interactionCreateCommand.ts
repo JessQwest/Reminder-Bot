@@ -6,8 +6,6 @@ import {
 import * as chrono from 'chrono-node';
 import { dateToDiscordTimestamp } from "./utility"
 
-chrono.parseDate('An appointment on Sep 12-13');
-
 async function option(options: Omit<CommandInteractionOptionResolver<CacheType>, "getMessage" | "getFocused">, name: string): Promise<any> {
     const optionObject = options.get(name)
     if (optionObject === null) return null
