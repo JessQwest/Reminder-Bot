@@ -1,8 +1,9 @@
 import { client } from "./index"
 const { SlashCommandBuilder } = require('discord.js');
 import { writeData, readData } from "./data_persistence"
+import { SlashCommandStringOption } from "@discordjs/builders"
 
-const commandVersion = "1";
+const commandVersion = "2";
 
 async function checkCommandVersion(): Promise<boolean> {
     try {
@@ -52,14 +53,24 @@ export async function resetCommands() {
         const commandData = new SlashCommandBuilder()
             .setName('reminder')
             .setDescription('Set a reminder')
-            .addStringOption((option: { setName: (arg0: string) => { (): any; new(): any; setDescription: { (arg0: string): { (): any; new(): any; setRequired: { (arg0: boolean): any; new(): any; }; }; new(): any; }; }; }) =>
-                option.setName('text')
-                    .setDescription('Reminder text')
+            .addStringOption((option: SlashCommandStringOption) =>
+                option.setName('time')
+                    .setDescription('The time to set the reminder for')
                     .setRequired(true)
-            );
+            )
+            .addStringOption((option: SlashCommandStringOption) =>
+                option.setName('text')
+                    .setDescription('The message content to send')
+                    .setRequired(true)
+            )
+            .addRoleOption((option: SlashCommandStringOption) =>
+                option.setName('role')
+                    .setDescription('The role to ping with this reminder')
+                    .setRequired(false)
+            )
 
         await client.application.commands.create(commandData);
-        console.log('New command "reminder" registered successfully.');
+        console.log(`New command "${commandData.name}" registered successfully.`);
     } catch (error) {
         console.error('Error resetting commands:', error);
     }

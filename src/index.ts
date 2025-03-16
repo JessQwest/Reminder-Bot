@@ -110,6 +110,7 @@ client.on('messageCreate', async (message: Message) => {
 })
 
 client.on('interactionCreate', async (i: Interaction<CacheType>) => {
+    if (!i.isChatInputCommand()) return
     await interactionCreateCommand(client, i)
 })
 
