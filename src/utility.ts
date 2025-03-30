@@ -127,6 +127,7 @@ export type StartEndTime = "start" | "end"
 
 export function dateToDiscordTimestamp(date: Date, timestampType: TimestampType = "f", startEndTime: StartEndTime | null = null): string {
     let modifiedDate = date
+    if (date === undefined) return "Invalid Date"
     if (date.getHours() === 0 && date.getMinutes() === 0 && date.getSeconds() === 0) {
         let timeModifier = 12 * 60 * 60 * 1000
         if (startEndTime === "end") timeModifier *= -1

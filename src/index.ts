@@ -30,16 +30,9 @@ export var DEBUGMODE = loadOption('debug-mode.enabled')
 export const DEBUG_SERVER_ID = loadOption('debug-mode.debug-server-id')
 export const DEBUG_CHANNEL_ID = loadOption('debug-mode.debug-channel-id')
 
-export const LOGGING_SERVER_ID = loadOption('server-info.logging-server-id')
 export const LOGGING_CHANNEL_ID = loadOption('server-info.logging-channel-id')
 
 console.log(`Running with debug mode set to ${DEBUGMODE}`)
-
-// channel constants
-
-
-// server constants
-export const MAIN_SERVER_ID = loadOption('server-info.server-id')
 
 // other constants
 export const ADMIN_USER_ID = loadOption('server-info.admin-user-id')
@@ -123,6 +116,11 @@ client.on(Events.InteractionCreate, async (i: Interaction) => {
 // hourly housekeep
 cron.schedule('0 * * * *', async () => {
     await scheduled_jobs.hourlyHousekeepTask()
+})
+
+// every minute check reminders
+cron.schedule('* * * * *', async () => {
+    await scheduled_jobs.reminderCheck()
 })
 
 process.on('unhandledRejection', error => {

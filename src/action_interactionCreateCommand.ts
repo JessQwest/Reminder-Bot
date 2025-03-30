@@ -21,10 +21,20 @@ export async function interactionCreateCommand(client: Client, i: ChatInputComma
         const timeInput: string = await option(options, "time")
         const textInput: string = await option(options, "text")
 
-        const reminderDate: Date | null = chrono.parseDate(`in ${timeInput}`)
-
-        if (reminderDate === null) {
+        let reminderDate: Date | null = chrono.parseDate(`in ${timeInput}`)
+        if (reminderDate !== null) {
+            if (reminderDate.getSeconds() > 0 || reminderDate.getMilliseconds() > 0) {
+                reminderDate.setMinutes(reminderDate.getMinutes() + 1)
+                reminderDate.setSeconds(0, 0)
+            }
+        } else {
             await i.reply("I couldn't understand the time you provided. Please try again.")
+            return
+        }
+
+        const guildId = i.guildId
+        if (guildId === null) {
+            await i.reply("A reminder must be created within a server channel.")
             return
         }
 
@@ -32,6 +42,7 @@ export async function interactionCreateCommand(client: Client, i: ChatInputComma
             reminderId: null,
             reminderDatetime: reminderDate,
             createdDatetime: new Date(),
+            serverId: guildId,
             channelId: i.channelId,
             userId: user.id,
             reminderText: textInput,

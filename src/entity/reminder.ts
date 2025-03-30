@@ -5,6 +5,7 @@ export interface Reminder {
     reminderId: number | null
     reminderDatetime: Date
     createdDatetime: Date
+    serverId: string
     channelId: string
     userId: string
     reminderText: string

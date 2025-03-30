@@ -1,12 +1,12 @@
 server-info:
-  # The ID of the main server
-  server-id: ''
-
+  # Optional, ID of user to have admin permissions
   admin-user-id: ''
 
-  logging-server-id: ''
+  # Optional, ID of Discord channel where logs will be sent
   logging-channel-id: ''
 
+# This must be a modern mysql database instance.
+# The database schema must be created before running the bot. The bot will handle table creation.
 database:
   host: ''
   port: ''
