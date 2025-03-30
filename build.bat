@@ -1,3 +1,3 @@
-docker build -t robota:latest .
+docker build -t reminderbot:latest .
 
-docker save -o robota.tar robota:latest
+docker save -o reminderbot.tar reminderbot:latest

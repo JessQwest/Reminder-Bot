@@ -4,7 +4,8 @@ import {
     Client, CommandInteractionOptionResolver
 } from "discord.js"
 import * as chrono from 'chrono-node';
-import { dateToDiscordTimestamp } from "./utility"
+import {saveReminder} from "./db_communications";
+import {Reminder, reminderToEmbed} from "./entity/reminder";
 
 async function option(options: Omit<CommandInteractionOptionResolver<CacheType>, "getMessage" | "getFocused">, name: string): Promise<any> {
     const optionObject = options.get(name)
@@ -14,21 +15,38 @@ async function option(options: Omit<CommandInteractionOptionResolver<CacheType>,
 
 export async function interactionCreateCommand(client: Client, i: ChatInputCommandInteraction) {
     if (!i.isChatInputCommand()) return
-
     const { commandName, options, user, member, guild } = i
 
     if (commandName === "reminder") {
         const timeInput: string = await option(options, "time")
         const textInput: string = await option(options, "text")
 
-        const date: Date | null = chrono.parseDate(`in ${timeInput}`)
+        const reminderDate: Date | null = chrono.parseDate(`in ${timeInput}`)
 
-        if (date === null) {
+        if (reminderDate === null) {
             await i.reply("I couldn't understand the time you provided. Please try again.")
             return
         }
 
-        await i.reply(`Reminder time parsed as ${dateToDiscordTimestamp(date)}`)
+        const newReminder: Reminder = {
+            reminderId: null,
+            reminderDatetime: reminderDate,
+            createdDatetime: new Date(),
+            channelId: i.channelId,
+            userId: user.id,
+            reminderText: textInput,
+            rolePingId: null,
+            action: null
+        }
+
+        const saveSuccess: Boolean = await saveReminder(newReminder)
+
+        if (saveSuccess) {
+            await i.reply({content: `Saved reminder successfully!`, embeds: [await reminderToEmbed(newReminder)]})
+        } else {
+            await i.reply("Unable to save the reminder.")
+        }
+
         return
     }
 }

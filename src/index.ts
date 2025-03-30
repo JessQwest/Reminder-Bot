@@ -80,7 +80,7 @@ export const con = mysql.createPool({
     database: dbDatabase
 })
 
-export var debugchannel: GuildTextBasedChannel
+export var debugchannel: GuildTextBasedChannel | null
 export var loggingchannel: GuildTextBasedChannel
 
 client.on(Events.ClientReady, async () => {
@@ -98,7 +98,7 @@ client.on(Events.ClientReady, async () => {
         client.user.setActivity(`📜Remembering Everything!`, {type: ActivityType.Custom})
     }
 
-    debugchannel = await client.channels.fetch(DEBUG_CHANNEL_ID) as GuildTextBasedChannel
+    debugchannel = (DEBUG_CHANNEL_ID !== null && DEBUG_CHANNEL_ID !== "") ? await client.channels.fetch(DEBUG_CHANNEL_ID) as GuildTextBasedChannel : null
     loggingchannel = await client.channels.fetch(LOGGING_CHANNEL_ID) as GuildTextBasedChannel
 
     console.info(`The bot is ready ${new Date().toISOString()}`)

@@ -115,6 +115,16 @@ export type TimestampType = "d" | "D" | "t" | "T" | "f" | "F" | "R"
 
 export type StartEndTime = "start" | "end"
 
+/*
+<t:1743324120:d>        30/03/2025
+<t:1743324120:D>        30 March 2025
+<t:1743324120:t>        09:42
+<t:1743324120:T>        09:42:00
+<t:1743324120:f>        30 March 2025 09:42
+<t:1743324120:F>        Sunday, 30 March 2025 09:42
+<t:1743324120:R>        a minute ago
+*/
+
 export function dateToDiscordTimestamp(date: Date, timestampType: TimestampType = "f", startEndTime: StartEndTime | null = null): string {
     let modifiedDate = date
     if (date.getHours() === 0 && date.getMinutes() === 0 && date.getSeconds() === 0) {
