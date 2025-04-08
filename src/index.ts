@@ -6,6 +6,8 @@ import * as scheduled_jobs from './scheduled_jobs'
 import * as command_management from './command_management'
 import { messageCreate } from "./action_messageCreate"
 import { interactionAutoComplete } from "./action_interactionAutoComplete"
+import { generateChronoSettings } from "./zTopic_Chrono";
+
 const { ActivityType } = require('discord.js');
 
 var cron = require('node-cron')
@@ -16,23 +18,34 @@ const mysql = require('mysql2')
 
 const {Client, GatewayIntentBits, Partials} = require('discord.js')
 
-function loadOption(key: string): any {
+function loadOption(key: string, fallback?: any): any {
     const modifiedKey = key.replace(/\./g, '_')
     if (process.env[modifiedKey] !== undefined) {
         return process.env[modifiedKey]
     }
-    return config.get(key)
+    try {
+        return config.get(key)
+    } catch (e) {
+        if (fallback !== undefined) return fallback
+        else throw `Required parameter not defined! (${key})`
+    }
 }
 
-
 // debug constants
-export var DEBUGMODE = loadOption('debug-mode.enabled')
-export const DEBUG_SERVER_ID = loadOption('debug-mode.debug-server-id')
-export const DEBUG_CHANNEL_ID = loadOption('debug-mode.debug-channel-id')
+export var DEBUGMODE = loadOption('debug-mode.enabled', false)
+export const DEBUG_SERVER_ID = loadOption('debug-mode.debug-server-id', null)
+export const DEBUG_CHANNEL_ID = loadOption('debug-mode.debug-channel-id', null)
 
-export const LOGGING_CHANNEL_ID = loadOption('server-info.logging-channel-id')
+export const LOGGING_CHANNEL_ID = loadOption('server-info.logging-channel-id', null)
 
 console.log(`Running with debug mode set to ${DEBUGMODE}`)
+
+// Chrono constants
+export const TIMEZONE = loadOption('chrono.timezone', "UTC")
+export const TIMEZONE_OFFSET_DURING_DST = loadOption('chrono.timezone-offset-during-dst', null)
+export const TIMEZONE_OFFSET_NON_DST = loadOption('chrono.timezone-offset-non-dst', null)
+export const DST_START = loadOption('chrono.dst-start', null)
+export const DST_END = loadOption('chrono.dst-end', null)
 
 // other constants
 export const ADMIN_USER_ID = loadOption('server-info.admin-user-id')
@@ -94,6 +107,8 @@ client.on(Events.ClientReady, async () => {
     debugchannel = (DEBUG_CHANNEL_ID !== null && DEBUG_CHANNEL_ID !== "") ? await client.channels.fetch(DEBUG_CHANNEL_ID) as GuildTextBasedChannel : null
     loggingchannel = await client.channels.fetch(LOGGING_CHANNEL_ID) as GuildTextBasedChannel
 
+    generateChronoSettings()
+
     console.info(`The bot is ready ${new Date().toISOString()}`)
 
     await loggingchannel.send("Bot Started")
@@ -119,7 +134,7 @@ cron.schedule('0 * * * *', async () => {
 })
 
 // every minute check reminders
-cron.schedule('* * * * *', async () => {
+cron.schedule('30 * * * * *', async () => {
     await scheduled_jobs.reminderCheck()
 })
 

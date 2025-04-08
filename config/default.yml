@@ -5,6 +5,27 @@ server-info:
   # Optional, ID of Discord channel where logs will be sent
   logging-channel-id: ''
 
+chrono:
+  # Optional, Timezone code to use, defaults to UTC
+  # Use this page to find your timezone: https://github.com/wanasit/chrono/blob/master/src/timezone.ts
+  # In addition to the above, British Time ('BT') has been added for the UK and Ireland
+  timezone: 'UTC'
+
+  # In case your specific timezone isn't specified, define it here. Specifying a value will override the timezone value.
+  timezone-offset-during-dst: '60'
+  timezone-offset-non-dst: '0'
+  # Month as a number, day of week as a number, week of the month as a number (or 'last'), hour as a number
+  # If DST starts on the last Sunday of March at 2am, you would write '3, 6, last, 2'
+  #SUNDAY = 0
+  #MONDAY = 1
+  #TUESDAY = 2
+  #WEDNESDAY = 3
+  #THURSDAY = 4
+  #FRIDAY = 5
+  #SATURDAY = 6
+  dst-start: '3, 6, last, 2'
+  dst-end: '10, 6, last, 3'
+
 # This must be a modern mysql database instance.
 # The database schema must be created before running the bot. The bot will handle table creation.
 database:
