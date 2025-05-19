@@ -98,18 +98,11 @@ export function formatListOfStrings(strings: string[]): string {
     }
 }
 
-export async function dataFetch(data_url: string) : Promise<string> {
-    try {
-        const response = await fetch(data_url);
-        const fileContent = await response.text();
-        return fileContent
-    } catch (error) {
-        console.error(`Failed to fetch file: ${error}`);
-        throw error
-    }
-    return ""
+export function formatMapAsStringList(map: Map<string, string>): string {
+    return Array.from(map.entries())
+        .map(([key, value]) => `${key}: ${value}`)
+        .join('\n');
 }
-
 
 export type TimestampType = "d" | "D" | "t" | "T" | "f" | "F" | "R"
 

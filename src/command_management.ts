@@ -1,9 +1,9 @@
 import { client } from "./index"
 const { SlashCommandBuilder } = require('discord.js');
 import { writeData, readData } from "./data_persistence"
-import { SlashCommandStringOption } from "@discordjs/builders"
+import { SlashCommandStringOption, SlashCommandSubcommandBuilder } from "@discordjs/builders"
 
-const commandVersion = "3";
+const commandVersion = "4";
 
 async function checkCommandVersion(): Promise<boolean> {
     try {
@@ -50,7 +50,7 @@ export async function resetCommands() {
         console.log('All commands deleted. Now registering new commands...');
 
         // Register new "reminder" command
-        const commandData = new SlashCommandBuilder()
+        const commandData1 = new SlashCommandBuilder()
             .setName('reminder')
             .setDescription('Set a reminder')
             .addStringOption((option: SlashCommandStringOption) =>
@@ -69,9 +69,52 @@ export async function resetCommands() {
                     .setDescription('The role to ping with this reminder')
                     .setRequired(false)
             )
+            .addRoleOption((option: SlashCommandStringOption) =>
+                option.setName('action')
+                    .setDescription('API to call. in format "GET:https://www.google.com"')
+                    .setRequired(false)
+            )
 
-        await client.application.commands.create(commandData);
-        console.log(`New command "${commandData.name}" registered successfully.`);
+        await client.application.commands.create(commandData1);
+        console.log(`New command "${commandData1.name}" registered successfully.`);
+
+        // Register new "urialias" command
+        const commandData2 = new SlashCommandBuilder()
+            .setName('urialias')
+            .setDescription('Manage URI aliases')
+            .addSubcommand(() =>
+                new SlashCommandSubcommandBuilder()
+                    .setName('list')
+                    .setDescription('List all URI aliases')
+            )
+            .addSubcommand(() =>
+                new SlashCommandSubcommandBuilder()
+                    .setName('add')
+                    .setDescription('Add a new URI alias')
+                    .addStringOption(option =>
+                        option.setName('key')
+                            .setDescription('The key for the URI alias')
+                            .setRequired(true)
+                    )
+                    .addStringOption(option =>
+                        option.setName('value')
+                            .setDescription('The value for the URI alias')
+                            .setRequired(true)
+                    )
+            )
+            .addSubcommand(() =>
+                new SlashCommandSubcommandBuilder()
+                    .setName('delete')
+                    .setDescription('Delete an existing URI alias')
+                    .addStringOption(option =>
+                        option.setName('key')
+                            .setDescription('The key of the URI alias to delete')
+                            .setRequired(true)
+                    )
+            );
+
+        await client.application.commands.create(commandData2);
+        console.log(`New command "${commandData2.name}" registered successfully.`);
     } catch (error) {
         console.error('Error resetting commands:', error);
     }

@@ -10,4 +10,11 @@ export function setupDatabaseTables() {
         if (err) throw err
         console.log(`reminders table created if not exists`)
     })
+
+    con.query('CREATE TABLE IF NOT EXISTS `urialias` (`datakey` VARCHAR(30) NOT NULL, `datavalue` MEDIUMTEXT NOT NULL, PRIMARY KEY (`datakey`))',
+        function (err: any, result: any, fields: any) {
+            if (err) throw err;
+            console.log(`urialias table created if not exists`);
+        }
+    );
 }
